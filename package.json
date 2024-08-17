@@ -1,0 +1,17 @@
+{
+  "name": "comerbot",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --env-file=.env --watch app.js"
+  },
+  "keywords": [],
+  "author": "Yosimar Zahid Aquino Sosa",
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "mssql": "^11.0.1",
+    "telegraf": "^4.16.3"
+  }
+}
