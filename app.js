@@ -1,43 +1,51 @@
 const tf = require('telegraf')
-const { getCodRoute } = require('./querys')
+const { selectionRouteNumber } = require('./routenumber.js')
+const { selectionRouteAv, selectionRoutePv, selectionRouteRp } = require('./routetype.js')
 
 const bot = new tf.Telegraf(process.env.TELEGRAM_TOKEN)
 
 bot.start((ctx) => {
     ctx.reply('Hola, Soy ComerBot 🤖\n\n'
         + 'Estare ayudandote en el proceso de obtencion de codigos de venta 💹💰\n\n'
-        + 'Para obtener los codigos de una ruta escriba lo siguiente:\n\n'
-        + '\t\t\t/codigo <ClaveRuta>\n\n'
-        + 'Se le otorgaran las claves de venta de la ruta especificada\n\n'
-        + 'Tambien puedes usar el comando /help para mostrarte informacion de contacto para el soporte tecnico 👾')
+        + 'Selecciona alguna de las opciones presentadas a continuacion para saber el tipo de ruta 🚚 a la cual obtendras sus codigos\n\n'
+        + 'Tambien puedes usar el comando /help para mostrarte informacion de contacto para el soporte tecnico 👾', {
+        reply_markup: {
+            inline_keyboard: [
+                [
+                    { text: "Autoventa", callback_data: "av" },
+                    { text: "Preventa", callback_data: "pv" },
+                    { text: "Reparto", callback_data: "rp" }],
+            ]
+        }
+    })
 })
+
+bot.on('callback_query', async (ctx) => {
+    let optioncb = ctx.callbackQuery.data
+    let data = {}
+    switch (optioncb) {
+        case 'av':
+            data = await selectionRouteAv()
+            break;
+        case 'pv':
+            data = await selectionRoutePv()
+            break;
+        case 'rp':
+            data = await selectionRouteRp()
+            break;
+        default:
+            ctx.reply('Verificando codigo de ruta 🖥️')
+            data = await selectionRouteNumber(optioncb)
+            break;
+    }
+    ctx.reply(data.message, data.options)
+})
+
 
 bot.help((ctx) => {
+    ctx.setChatMenuButton()
     ctx.reply('Seccion de ayuda de ComerBot 🤖\n\n'
         + 'Hemos sido infomados sobre tus dudas sobre el bot, pronto nos pondremos en contacto contigo. \n\n -SoporteTi 🖥️')
-})
-
-bot.command('codigo', async (ctx) => {
-    let cod = ctx.message.text
-    cod = cod.replace('/codigo ', '')
-    cod = cod.trim()
-    let regex = /^[0-9]+/
-    if (!regex.test(cod)) {
-        ctx.reply('Advertencia!⚠️\n\n' +
-            'El comando /codigo, debe ir seguido del codigo de la ruta, Ejemplo:\n\n' + '\t\t\t/codigo 123456')
-    } else {
-        ctx.reply('Verificando codigo de ruta 🖥️')
-        let codRoutes = await getCodRoute(cod)
-        if (codRoutes.length == 0) {
-            ctx.reply('No se encontraron codigos para la ruta especificada\n\nPor favor intente nuevamente.')
-        } else {
-            textcod = ''
-            codRoutes.forEach(el => {
-                textcod += el + '\n'
-            });
-            ctx.reply('Codigos Disponibles para la Ruta ' + cod + ' 🚚:\n\n' + textcod + '\nEncantado de ayudar 🤖')
-        }
-    }
 })
 
 bot.launch()

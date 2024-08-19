@@ -1,4 +1,4 @@
-const { getConnection } = require("./database")
+const { getConnection } = require("./database.js")
 
 const getCodRoute = async (codRoute) => {
     const pool = await getConnection()
