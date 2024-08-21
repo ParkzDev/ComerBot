@@ -3,8 +3,10 @@ const { selectionRouteNumber } = require('./routenumber.js')
 const { selectionRouteAv, selectionRoutePv, selectionRouteRp } = require('./routetype.js')
 
 const bot = new tf.Telegraf(process.env.TELEGRAM_TOKEN)
+const validUsers =  process.env.TELEGRAM_USERS.split(',')
 
 bot.start((ctx) => {
+    if (validUsers.indexOf(String(ctx.update.message.from.id)) == -1) return
     ctx.reply('Hola, Soy ComerBot 🤖\n\n'
         + 'Estare ayudandote en el proceso de obtencion de codigos de venta 💹💰\n\n'
         + 'Selecciona alguna de las opciones presentadas a continuacion para saber el tipo de ruta 🚚 a la cual obtendras sus codigos\n\n'
@@ -43,6 +45,7 @@ bot.on('callback_query', async (ctx) => {
 
 
 bot.help((ctx) => {
+    if (validUsers.indexOf(String(ctx.update.message.from.id)) == -1) return
     ctx.setChatMenuButton()
     ctx.reply('Seccion de ayuda de ComerBot 🤖\n\n'
         + 'Hemos sido infomados sobre tus dudas sobre el bot, pronto nos pondremos en contacto contigo. \n\n -SoporteTi 🖥️')
