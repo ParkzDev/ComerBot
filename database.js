@@ -13,8 +13,7 @@ const sqlConfig = {
 
 const getConnection = async () => {
     try {
-        const pool = await sql.connect(sqlConfig)
-        return pool
+        return await sql.connect(sqlConfig)
     } catch (err) {
         console.error('Error Database connection: ' + err)
     }

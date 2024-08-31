@@ -1,7 +1,7 @@
 const { getCodRoute } = require('./querys.js')
 
 const selectionRouteNumber = async (routeNumber) => {
-    let data = {}
+    let data
     let regex = /^[0-9]+/
     if (!regex.test(routeNumber)) {
         data = {
@@ -11,7 +11,7 @@ const selectionRouteNumber = async (routeNumber) => {
         }
     } else {
         let codRoutes = await getCodRoute(routeNumber)
-        if (codRoutes.length == 0) {
+        if (codRoutes.length === 0) {
             data = {
                 message: 'Lo sentimos! 😕\n\n'
                     + 'No se encontraron codigos para la ruta seleccionada\n\n'
@@ -19,7 +19,7 @@ const selectionRouteNumber = async (routeNumber) => {
                 options: {}
             }
         } else {
-            textcod = ''
+            let textcod = ''
             codRoutes.forEach(el => {
                 textcod += el + '\n'
             });
