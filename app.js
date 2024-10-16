@@ -16,6 +16,9 @@ bot.start((ctx) => {
                 [
                     { text: "Contraseñas", callback_data: "passwords" },
                     { text: "Supervision", callback_data: "ramdon" }]
+                ,
+                [ { text: "Cambio de contraseñas", callback_data: "change_password" } ]
+
             ]
         }
     })
@@ -46,6 +49,21 @@ bot.on('callback_query', async (ctx) => {
                     + routes[~~(Math.random() * routes.length)] + '\n\nEncantado de ayudar 🤖\n\n'
                     + 'Inicia de nuevo presionando aqui 👉 /start',
                 options: {}
+            }
+            break
+        case 'change_password':
+            data = {
+                message:'Selecciona alguna de las opciones presentadas a continuacion para saber el tipo de ruta 🚚 a la cual cambiarás su contraseña de venta 📝 \n\n',
+                options: {
+                    reply_markup: {
+                        inline_keyboard: [
+                            [
+                                { text: "Autoventa", callback_data: "av_change" },
+                                { text: "Preventa", callback_data: "pv_change" },
+                                { text: "Reparto", callback_data: "rp_change" }]
+                        ]
+                    }
+                }
             }
             break
         case 'av':
