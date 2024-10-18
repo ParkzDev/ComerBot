@@ -12,6 +12,7 @@
   "description": "",
   "dependencies": {
     "mssql": "^11.0.1",
+    "randn": "^1.0.0",
     "telegraf": "^4.16.3"
   }
 }
