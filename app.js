@@ -1,7 +1,8 @@
 const tf = require('telegraf')
-const { selectionRouteNumber } = require('./routenumber.js')
+const { selectionRouteNumber, selectionRouteNumber_change } = require('./routenumber.js')
 const { selectionRouteAv, selectionRoutePv, selectionRouteRp } = require('./routetype.js')
-let routes =  ["RF3",34,36,71,72,73,74,75,76,77,80,81,83,84];
+let option_change = false;
+let routes =  [24,34,36,71,72,73,74,75,76,77,80,81,83,84];
 
 const bot = new tf.Telegraf(process.env.TELEGRAM_TOKEN)
 const validUsers =  process.env.TELEGRAM_USERS.split(',')
@@ -16,6 +17,9 @@ bot.start((ctx) => {
                 [
                     { text: "Contraseñas", callback_data: "passwords" },
                     { text: "Supervision", callback_data: "ramdon" }]
+                ,
+                [ { text: "Cambio de contraseñas", callback_data: "change_password" } ]
+
             ]
         }
     })
@@ -24,6 +28,7 @@ bot.start((ctx) => {
 bot.on('callback_query', async (ctx) => {
     let optioncb = ctx.callbackQuery.data
     let data
+    let data_change_password
     switch (optioncb) {
         case 'passwords':
             data = {
@@ -48,8 +53,23 @@ bot.on('callback_query', async (ctx) => {
                 options: {}
             }
             break
+        case 'change_password':
+            data_change_password = {
+                message:'Selecciona alguna de las opciones presentadas a continuacion para saber el tipo de ruta 🚚 a la cual cambiarás su contraseña de venta 📝 \n\n',
+                options: {
+                    reply_markup: {
+                        inline_keyboard: [
+                            [
+                                { text: "Autoventa", callback_data: "av_change" },
+                                { text: "Preventa", callback_data: "pv_change" },
+                                { text: "Reparto", callback_data: "rp_change" }]
+                        ]
+                    }
+                }
+            }
+            break
         case 'av':
-            data = await selectionRouteAv()
+            data =  await selectionRouteAv()
             break
         case 'pv':
             data = await selectionRoutePv()
@@ -57,12 +77,35 @@ bot.on('callback_query', async (ctx) => {
         case 'rp':
             data = await selectionRouteRp()
             break
+        case 'av_change':
+            data_change_password = await selectionRouteAv()
+            option_change = true;
+            break
+        case 'pv_change':
+            data_change_password = await selectionRoutePv()
+            option_change = true;
+            break
+        case 'rp_change':
+            data_change_password = await selectionRouteRp()
+            option_change = true;
+            break;
         default:
             ctx.reply('Verificando codigo de ruta 🖥️')
+            if(option_change){
+                data_change_password = await selectionRouteNumber_change(optioncb)    
+                break
+            }
             data = await selectionRouteNumber(optioncb)
             break
     }
-    ctx.reply(data.message, data.options)
+    if(data){
+        ctx.reply(data.message , data.options);
+        option_change = false;
+    }
+    if(data_change_password){
+        ctx.reply(data_change_password.message ,data_change_password.options)
+    }
+   
 })
 
 
