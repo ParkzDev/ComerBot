@@ -25,7 +25,7 @@ const insertPasswordRoute = async (codRoute) => {
         const pool = await getConnection()
         await pool.request().query(`DELETE FROM ${process.env.DB_TABLE} WHERE ${process.env.DB_COLUM}=${codRoute}`)
 
-        for (let i = 0; i <= cantcods; i++) {
+        for (let i = 0; i < cantcods; i++) {
             let passcod = randn(4)
             let addtime = formatedTimestamp()
             await pool.request().query(`INSERT INTO  ${process.env.DB_TABLE} VALUES (2,1, ${codRoute},${passcod},'COMERBOT', '${addtime}',NULL,NULL,NULL,NULL)`)
