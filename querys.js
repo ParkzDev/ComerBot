@@ -1,5 +1,6 @@
 const { getConnection } = require("./database.js")
 const randn = require('randn');
+const { formatedTimestamp } = require("./utils/currentdate.js")
 const getCodRoute = async (codRoute) => {
     const pool = await getConnection()
     const result = await pool.request().query(`SELECT * FROM ${process.env.DB_TABLE} WHERE ${process.env.DB_COLUM}=${codRoute}`)
@@ -26,7 +27,8 @@ const insertPasswordRoute = async (codRoute) => {
 
         for (let i = 0; i <= cantcods; i++) {
             let passcod = randn(4)
-            await pool.request().query(`INSERT INTO  ${process.env.DB_TABLE} VALUES (2,1, ${codRoute},${passcod},'COMERBOT', '2024-10-18',NULL,NULL,NULL,NULL)`)
+            let addtime = formatedTimestamp()
+            await pool.request().query(`INSERT INTO  ${process.env.DB_TABLE} VALUES (2,1, ${codRoute},${passcod},'COMERBOT', '${addtime}',NULL,NULL,NULL,NULL)`)
           }
         codRoutes = getCodRoute(codRoute);
     }
