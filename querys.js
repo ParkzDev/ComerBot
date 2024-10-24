@@ -18,14 +18,14 @@ const getCodRoute = async (codRoute) => {
 const insertPasswordRoute = async (codRoute) => {
 
     let codRoutes = await getCodRoute(codRoute)
-    let cantcods = codRoute.length;
+    let cantcods = codRoutes.length;
     if (cantcods === 0) {
         return codRoutes;
     } else {
         const pool = await getConnection()
         await pool.request().query(`DELETE FROM ${process.env.DB_TABLE} WHERE ${process.env.DB_COLUM}=${codRoute}`)
 
-        for (let i = 0; i <= cantcods; i++) {
+        for (let i = 0; i < cantcods; i++) {
             let passcod = randn(4)
             let addtime = formatedTimestamp()
             await pool.request().query(`INSERT INTO  ${process.env.DB_TABLE} VALUES (2,1, ${codRoute},${passcod},'COMERBOT', '${addtime}',NULL,NULL,NULL,NULL)`)
