@@ -2,7 +2,7 @@ const tf = require('telegraf')
 const { selectionRouteNumber, selectionRouteNumber_change } = require('./routenumber.js')
 const { selectionRouteAv, selectionRoutePv, selectionRouteRp } = require('./routetype.js')
 let option_change = false;
-let routes =  [24,34,36,71,72,73,74,75,76,77,80,81,83,84];
+let routes =  [24,34,36,71,72,73,74,75,76,77,80,81,83,84,85,86];
 
 const bot = new tf.Telegraf(process.env.TELEGRAM_TOKEN)
 const validUsers =  process.env.TELEGRAM_USERS.split(',')
