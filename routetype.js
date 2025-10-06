@@ -61,6 +61,22 @@ const selectionRouteRp = async () => {
                         { text: "RP75", callback_data: "75" },
                         { text: "RP76", callback_data: "76" },
                         { text: "RP77", callback_data: "77" }
+                    ],
+                    [
+                        { text: "RP80", callback_data: "80" },
+                        { text: "RP81", callback_data: "81" },
+                        { text: "RP82", callback_data: "82" },
+
+                    ],
+                    [
+                        { text: "RP83", callback_data: "83" },
+                        { text: "RP84", callback_data: "84" },
+                        { text: "RP85", callback_data: "85" },
+
+                    ],
+                    [
+                        { text: "RP86", callback_data: "86" },
+                        
                     ]
                 ]
             }
