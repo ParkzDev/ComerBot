@@ -35,4 +35,14 @@ const insertPasswordRoute = async (codRoute) => {
     return codRoutes
 }
 
-module.exports = { getCodRoute,insertPasswordRoute }
+const getReportCodeRoutes = async() =>{
+    const pool = await getConnection()
+    const result = await pool.request().query(`SELECT cverut,  paspta , usralt, fecalt FROM ${process.env.DB_TABLE};`)
+    
+    if (result.recordset.length === 0) {
+        return -1
+    } 
+    return result;
+}
+
+module.exports = { getCodRoute,insertPasswordRoute, getReportCodeRoutes }
