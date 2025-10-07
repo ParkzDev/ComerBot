@@ -4,8 +4,8 @@ const { selectionRouteNumber, selectionRouteNumber_change} = require('./routenum
 const { selectionRouteAv, selectionRoutePv, selectionRouteRp } = require('./routetype.js')
 const {generate_report_password} = require ('./utils/report_excel.js')
 const {getReportCodeRoutes } = require('./querys.js')
+const path = require('path');
 let option_change = false;
-let option_report = false;
 let routes =  [24,34,36,71,72,73,74,75,76,77,80,81,83,84,85,86];
 
 const bot = new tf.Telegraf(process.env.TELEGRAM_TOKEN)
@@ -80,25 +80,36 @@ bot.on('callback_query', async (ctx) => {
             let message_report
             if (result === -1) {
 
-                ctx.reply('Lo sentimos! 😕\n\n'
-                    + 'No se encontraron codigos para generar el reporte 📁\n\n'
-                    + 'Inicia de nuevo presionando aqui 👉 /start',)
+                data = {
+                message: 'Lo sentimos! 😕\n\n'
+                    + 'No se encontraron codigos para generar el reporte 📋📎📁\n\n'
+                    + 'Inicia de nuevo presionando aqui 👉 /start',
+                options: {}
+                }
             }
             else
             {
                  message_report = await generate_report_password(result);
                 if(message_report === 'success')
                 {
-                    ctx.replyWithDocument({ source:  fs.createReadStream("./report.xlsx"), filename: "report.xlsx" })
-                    ctx.reply('Listo! ✅\n\n'
-                    + 'Te anexo el reporte 📋📎\n\n'
-                    + 'Inicia de nuevo presionando aqui 👉 /start',)
+                    const localpath = path.resolve(__dirname, 'report.xlsx');
+                    ctx.replyWithDocument({ source:  fs.createReadStream(localpath), filename: "report.xlsx" })
+                    data = {
+                        message: 'Listo! ✅\n\n'
+                        + 'Te anexo el reporte 📋📎\n\n'
+                        + 'Inicia de nuevo presionando aqui 👉 /start',
+                        options: {}
+                    }
                 }
                 else
                 {
-                    ctx.reply('Lo sentimos! 😕\n\n'
-                    + 'Ha ocurrido un erro al generar el reporte ❌\n\n'
-                    + 'Inicia de nuevo presionando aqui 👉 /start',) 
+                    data = {
+                        message: 'Lo sentimos! 😕\n\n'
+                        + 'Ha ocurrido un erro al generar el reporte ❌\n\n'
+                        + message_report + '\n\n'
+                        + 'Inicia de nuevo presionando aqui 👉 /start',
+                        options: {}
+                    }
                 }
             }
             
