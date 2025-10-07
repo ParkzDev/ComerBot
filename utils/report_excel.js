@@ -12,7 +12,7 @@ async function generate_report_password(data_query) {
          workbook.sheet(0).cell(row,1).value(result.cverut);
          workbook.sheet(0).cell(row,2).value(result.paspta);
          workbook.sheet(0).cell(row,3).value(result.usralt);
-         workbook.sheet(0).cell(row,4).value(result.fecalt);
+         workbook.sheet(0).cell(row,4).value(result.fecalt).style('numberFormat', 'MM/DD/YYYY');
         row +=1;
     });
 
