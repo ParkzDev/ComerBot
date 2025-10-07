@@ -1,7 +1,11 @@
 const tf = require('telegraf')
-const { selectionRouteNumber, selectionRouteNumber_change } = require('./routenumber.js')
+const fs = require('fs')
+const { selectionRouteNumber, selectionRouteNumber_change} = require('./routenumber.js')
 const { selectionRouteAv, selectionRoutePv, selectionRouteRp } = require('./routetype.js')
+const {generate_report_password} = require ('./utils/report_excel.js')
+const {getReportCodeRoutes } = require('./querys.js')
 let option_change = false;
+let option_report = false;
 let routes =  [24,34,36,71,72,73,74,75,76,77,80,81,83,84,85,86];
 
 const bot = new tf.Telegraf(process.env.TELEGRAM_TOKEN)
@@ -18,7 +22,9 @@ bot.start((ctx) => {
                     { text: "Contraseñas", callback_data: "passwords" },
                     { text: "Supervision", callback_data: "ramdon" }]
                 ,
-                [ { text: "Cambio de contraseñas", callback_data: "change_password" } ]
+                [ { text: "Cambio de contraseñas", callback_data: "change_password" },
+                    {text: "Respaldo de contraseñas",callback_data: "generate_report"}
+                 ]
 
             ]
         }
@@ -67,6 +73,35 @@ bot.on('callback_query', async (ctx) => {
                     }
                 }
             }
+            break
+        case 'generate_report':
+            ctx.reply('Generando reporte 🖥️')
+            let result = await getReportCodeRoutes()
+            let message_report
+            if (result === -1) {
+
+                ctx.reply('Lo sentimos! 😕\n\n'
+                    + 'No se encontraron codigos para generar el reporte 📁\n\n'
+                    + 'Inicia de nuevo presionando aqui 👉 /start',)
+            }
+            else
+            {
+                 message_report = await generate_report_password(result);
+                if(message_report === 'success')
+                {
+                    ctx.replyWithDocument({ source:  fs.createReadStream("./report.xlsx"), filename: "report.xlsx" })
+                    ctx.reply('Listo! ✅\n\n'
+                    + 'Te anexo el reporte 📋📎\n\n'
+                    + 'Inicia de nuevo presionando aqui 👉 /start',)
+                }
+                else
+                {
+                    ctx.reply('Lo sentimos! 😕\n\n'
+                    + 'Ha ocurrido un erro al generar el reporte ❌\n\n'
+                    + 'Inicia de nuevo presionando aqui 👉 /start',) 
+                }
+            }
+            
             break
         case 'av':
             data =  await selectionRouteAv()
